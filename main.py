@@ -10,7 +10,7 @@ import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 import os
 import subprocess
-from pytube import YouTube
+from pytube import YouTube,Playlist
 import random
 import requests
 import re
@@ -22,22 +22,12 @@ import string
 
 def foldertitle(url):
     try:
-        res = requests.get(url)
-    except:
-        print('no internet')
-        return False
+        playlist = Playlist(url)
+        return playlist.title
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
 
-    plain_text = res.text
-
-    if 'list=' in url:
-        eq = url.rfind('=') + 1
-        cPL = url[eq:]
-
-    else:
-        print('Incorrect attempt.')
-        return False
-
-    return cPL
 
 
 def link_snatcher(url):
@@ -86,14 +76,14 @@ our_links = link_snatcher(url)
 os.chdir(BASE_DIR)
 
 new_folder_name = foldertitle(url)
-print(new_folder_name[:7])
+print(new_folder_name)
 
 try:
-    os.mkdir(new_folder_name[:7])
+    os.mkdir(new_folder_name)
 except:
     print('folder already exists')
 
-os.chdir(new_folder_name[:7])
+os.chdir(new_folder_name)
 SAVEPATH = os.getcwd()
 print(f'\n files will be saved to {SAVEPATH}')
 
